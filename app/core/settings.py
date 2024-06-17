@@ -134,7 +134,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
 CSRF_TRUSTED_ORIGINS = [
-    '31.128.39.253:9090',
+    'http://31.128.39.253:9090',
     'http://127.0.0.1:8000/'
 ]
 # AUTH_USER_MODEL = 'authentication.CustomUser'
