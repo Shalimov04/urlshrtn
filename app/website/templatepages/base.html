@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@1.0.0/css/bulma.min.css">
+    <style>
+        body {
+<!--            font-family: "Montserrat", sans-serif;-->
+<!--            background-color: #f5f7fb;  /* Lighter background color */-->
+<!--            color: #343a40;  /* Darker text color */-->
+<!--            margin: 0;-->
+<!--            padding: 0;-->
+<!--        }-->
+
+<!--        header {-->
+<!--            background-color: #e0eefa;  /* Lighter header color */-->
+<!--            padding: 15px 20px;  /* Reduced padding */-->
+<!--            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);-->
+<!--        }-->
+
+<!--        .container {-->
+<!--            max-width: 960px;-->
+<!--            margin: 0 auto;-->
+<!--            padding: 25px;  /* Increased content padding */-->
+<!--        }-->
+
+<!--        h1 {-->
+<!--            font-size: 28px;  /* Increased heading size */-->
+<!--            margin-bottom: 15px;  /* Reduced margin */-->
+<!--        }-->
+
+<!--        p {-->
+<!--            line-height: 1.5;  /* Adjusted line-height */-->
+<!--        }-->
+
+<!--        @media (max-width: 768px) {-->
+<!--            .container {-->
+<!--                padding: 15px;  /* Smaller padding for mobile */-->
+<!--            }-->
+<!--        }-->
+
+<!--        .centered {-->
+<!--            text-align: center;-->
+<!--        }-->
+
+<!--        .menu {-->
+<!--            width: 250px;-->
+<!--            background-color: #333;-->
+<!--            position: fixed;-->
+<!--            top: 0;-->
+<!--            left: 0;-->
+<!--            height: 100%;-->
+<!--            overflow-y: auto;-->
+<!--        }-->
+<!--        .menu ul {-->
+<!--            list-style: none;-->
+<!--            padding: 0;-->
+<!--            margin: 0;-->
+<!--        }-->
+<!--        .menu ul li {-->
+<!--            padding: 15px;-->
+<!--            border-bottom: 1px solid #666;-->
+<!--        }-->
+<!--        .menu ul li:last-child {-->
+<!--            border-bottom: none;-->
+<!--        }-->
+<!--        .menu ul li a {-->
+<!--            color: #fff;-->
+<!--            text-decoration: none;-->
+<!--            display: block;-->
+<!--        }-->
+<!--        .menu-toggle {-->
+<!--            position: fixed;-->
+<!--            left: 10px;-->
+<!--            top: 10px;-->
+<!--            cursor: pointer;-->
+<!--            z-index: 999;-->
+<!--            color: #fff;-->
+<!--            font-size: 20px;-->
+<!--        }-->
+<!--        button {-->
+<!--            color: #e0eefa;-->
+<!--            background-color: #343a40;-->
+<!--            border: 1px solid #e0eefa;-->
+<!--            border-radius: 4px;-->
+<!--            padding: 0 15px;-->
+<!--            cursor: pointer;-->
+<!--            height:32px;-->
+<!--            font-size:14px;-->
+<!--            transition: all 0.2s ease-in-out;-->
+<!--        }-->
+<!--        button:hover {-->
+<!--            transform: scale(1.1);-->
+<!--        }-->
+        {% block style %}
+        {% endblock %}
+    </style>
+    <script src="https://kit.fontawesome.com/c6a4da051b.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <div class="tabs is-boxed">
+      <ul>
+      {% if user.is_authenticated %}
+        <li>
+          <a href="{% url 'create_outer_url' %}">
+            <span class="icon is-small"
+              ><i class="fa-solid fa-plus" aria-hidden="true"></i
+            ></span>
+            <span>Добавить ссылку</span>
+          </a>
+        </li>
+        <li>
+          <a href="/">
+            <span class="icon is-small"
+              ><i class="fa-solid fa-link" aria-hidden="true"></i
+            ></span>
+            <span>Мои ссылки</span>
+          </a>
+        </li>
+        <li>
+          <a href="{% url 'logout' %}">
+            <span class="icon is-small"
+              ><i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i
+            ></span>
+            <span>Выход</span>
+          </a>
+        </li>
+      {% else %}
+          <li>
+              <a href="{% url 'login' %}">
+                <span class="icon is-small"
+                  ><i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i
+                ></span>
+                <span>Вход</span>
+              </a>
+          </li>
+          <li>
+              <a href="{% url 'register' %}">
+                <span class="icon is-small"
+                  ><i class="fa-solid fa-registered" aria-hidden="true"></i
+                ></span>
+                <span>Регистрация</span>
+              </a>
+          </li>
+      {% endif %}
+      </ul>
+    </div>
+    <header>
+    </header>
+    <main>
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+    {% block optional %}
+    {% endblock %}
+</body>
+</html>
+

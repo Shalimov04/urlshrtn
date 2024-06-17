@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <div class="container" style="width:100%; display: flex; justify-content: center; text-align:center;">
+            <form method="post" id="stats_form">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <a href="/">Назад</a>
+            </form>
+    </div>
+    {% if message %}
+        <div class="container" style="width:100%;">
+            <h2 style="text-align: center;">{{ message }}</h2>
+        </div>
+    {% endif %}
+    {% if total_conversions %}
+        <br>
+        <div class="container">
+            <nav class="level">
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">Переходов всего</p>
+                  <p class="title">{{ total_conversions }}</p>
+                </div>
+              </div>
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">Переходов сегодня</p>
+                  <p class="title">{{ daily_conversions }}</p>
+                </div>
+              </div>
+              <div class="level-item has-text-centered">
+                <div>
+                  <p class="heading">Переходов за неделю</p>
+                  <p class="title">{{ weekly_conversions }}</p>
+                </div>
+              </div>
+            </nav>
+        </div>
+        <br>
+    {% endif %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.getElementById('stats_form');
+            var fields = form.querySelectorAll('select, input[type="date"]');
+            fields.forEach(function(field) {
+                field.addEventListener('change', function() {
+                    form.submit(); // Отправляем форму при изменении любого поля
+                });
+            });
+        });
+    </script>
+    <div id="plot1" class="container"></div>
+    <script>
+        var plot_data = JSON.parse('{{ plot_data | escapejs }}');
+        Plotly.newPlot('plot1', plot_data.data, plot_data.layout);
+    </script>
+    <br>
+    {% for name, plot in data_plots.items %}
+    <div id="{{ name }}" class="container"></div>
+    <script>
+        var plot = JSON.parse('{{ plot | escapejs }}');
+        Plotly.newPlot('{{ name }}', plot.data, plot.layout);
+    </script>
+    <br>
+    {% endfor %}
+{% endblock %}

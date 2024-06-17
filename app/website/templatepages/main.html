@@ -1,0 +1,114 @@
+{% extends "base.html" %}
+
+{% block title %}Главная{% endblock %}
+
+{% block style %}
+
+    table {
+        width: 100%;
+        max-width:100%;
+        border-collapse: collapse;
+        margin: 0 auto;
+    }
+
+    th, td {
+        min-width: 200px;
+        padding: 8px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .centered {
+        text-align: center;
+    }
+{% endblock %}
+
+{% block content %}
+    <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
+        <thead>
+            <tr>
+                <th>URL перенаправления</th>
+                <th>Сокращенные ссылки</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for outer_url, inner_dict in urls.items %}
+            <tr>
+                <td>
+                    <a href="{{ outer_url.url }}" >{{ outer_url.url }}</a>
+                    <br>
+                    <a href="{% url 'create_shortened_url' ou_slug=outer_url.slug %}" title="Добавить сокращенную ссылку"><button class="button"><i class="fa-solid fa-plus" aria-hidden="true"></i></button></a>
+                    <a href="{% url 'plot_view' ou_slug=outer_url.slug %}" title="Статистика общая"><button class="button"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></button></a>
+                    <a href="{% url 'download_excel' ou_slug=outer_url.slug %}" title="Скачать Excel-выгрузку"><button class="button"><i class="fa-solid fa-file-excel" aria-hidden="true"></i></button></a>
+                    <a onclick="delete_o_{{ outer_url.id }}()" title="Удалить"><button class="button"><i class="fa-solid fa-trash"></i></button></a>
+                </td>
+                <script>
+                    function delete_o_{{ outer_url.id }}() {
+                        if (confirm("Вы уверены, что хотите удалить этот объект?")) {
+                            // Перенаправить пользователя на URL удаления объекта
+                            window.location.href = "{% url 'delete_outer_url' ou_slug=outer_url.slug %}";
+                        }
+                    }
+                </script>
+                <td>
+                {% for shortened_url, data in inner_dict.items %}
+                    <div class="block">
+                        <a href="{{ shortened_url.path }}" {% if shortened_url.description %}title="{{ shortened_url.description }}"{% endif %}>{{ shortened_url.path }}</a> ({{ data.stats }} переходов)
+                        <br>
+                        {% if not loop.last %}
+                        {% endif %}
+                        <a href="{{ shortened_url.path }}" class="copyLink" title="Копировать"><button class="button"><i class="fa-solid fa-copy"></i></button></a>
+                        <a href="{% url 'get_qr_view' link=shortened_url.path %}" title="Сгенерировать QR"><button class="button"><i class="fa-solid fa-qrcode"></i></button></a>
+                        <a href="{% url 'plot_view' ou_slug=outer_url.slug su_path=shortened_url.path %}" title="Статистика сокращенной ссылки"><button class="button"><i class="fa-solid fa-chart-line" aria-hidden="true"></i></button></a>
+                        <a href="{% url 'edit_shortened_url' ou_slug=outer_url.slug url_id=shortened_url.id %}" title="Изменение сокращенной ссылки"><button class="button"><i class="fa-solid fa-pen-to-square" aria-hidden="true"></i></button></a>
+                        <a href="{% url 'download_excel' ou_slug=outer_url.slug su_path=shortened_url.path%}" title="Скачать Excel-выгрузку по сокращенной ссылке"><button class="button"><i class="fa-solid fa-file-excel" aria-hidden="true"></i></button></a>
+                        <a onclick="delete_s_{{ shortened_url.id }}()" title="Удалить"><button class="button"><i class="fa-solid fa-trash"></i></button></a>
+                        <script>
+                            function delete_s_{{ shortened_url.id }}() {
+                                if (confirm("Вы уверены, что хотите удалить этот объект?")) {
+                                    // Перенаправить пользователя на URL удаления объекта
+                                    window.location.href = "{% url 'delete_shortened_url' su_path=shortened_url.path %}";
+                                }
+                            }
+                        </script>
+                    </div>
+                {% endfor %}
+                </td>
+            </tr>
+        {% endfor %}
+            <tr>
+            <td class="centered">
+                <a href="{% url 'create_outer_url' %}"><button>Добавить ссылку</button></a>
+            </td>
+            <td>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+{% endblock %}
+{% block optional %}
+<script>
+    var copyLinks = document.querySelectorAll('.copyLink');
+    copyLinks.forEach(function(link) {
+        link.addEventListener('click', function(event) {
+            event.preventDefault();
+            var input = document.createElement('input');
+            input.value = link.href;
+            document.body.appendChild(input);
+            input.select();
+            document.execCommand('copy');
+            document.body.removeChild(input);
+            alert('Ссылка скопирована в буфер обмена: ' + link.href);
+        });
+    });
+</script>
+{% endblock %}
